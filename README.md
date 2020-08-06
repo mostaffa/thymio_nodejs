@@ -25,22 +25,3 @@ Run `npm i` in the cloned directory to install the required dependencies.
 Run `npm start`, then open `http://localhost:3005` in your browser.
 
 
-## How does it work?
-
-The thymio API is distributed as a [npm package](https://www.npmjs.com/package/@mobsya-association/thymio-api).
-It can be installed with `npm -i @mobsya-association/thymio-api`.
-
-This demo project also depends on:
-* Webpack to orchestrate the bundling of the application for both node and browser
-* Babel to convert the code in a flavor of Javascript compatible with older versions of web browsers
-
-The code is in `src` and gets compiled into `dist`.
-
-## What next.
-
-You can copy this project or get inspiration from it to start working on web-applications compatible with thymio.
-
-* [Thymio JS API](https://readthedocs.org/projects/aseba/)
-* [Webpack](https://webpack.js.org/)
-* [NPM](https://docs.npmjs.com/)
-* [Babel](https://babeljs.io/)
