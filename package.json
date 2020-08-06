@@ -1,0 +1,22 @@
+{
+  "name": "thymio",
+  "version": "1.0.0",
+  "description": "To connect with thymio using nodejs server in Raspberry pi",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon app",
+    "start": "nodemon app"
+  },
+  "author": "Mostafa Othman",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "dbus": "^1.0.7",
+    "dbus-native": "^0.4.0",
+    "debug": "^4.1.1",
+    "ejs": "^3.1.3",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "socket.io": "^2.3.0"
+  }
+}
