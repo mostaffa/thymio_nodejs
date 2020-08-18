@@ -2,155 +2,40 @@
 <html>
 
 <head>
-    <title><%= title %></title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/bootstrap-4.3.1-dist/css/bootstrap.min.css">
-    <script src="/javascripts/jquery.js"></script>
-    <script src="/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+  <title><%= title %></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="/bootstrap-4.3.1-dist/css/bootstrap.min.css">
+  <script src="/javascripts/jquery.js"></script>
+  <script src="/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
 
-    <link rel="stylesheet" href="/bootstrap-4.3.1-dist/css/bootstrap-slider.min.css">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel="stylesheet" href="/bootstrap-4.3.1-dist/css/bootstrap-slider.min.css">
+  <link rel='stylesheet' href='/stylesheets/style.css' />
 
-    <!-- Socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-  $(function(){
-    var socket = io();
-    socket.emit('dbusConnect', "dbusConnect");
-      $("#connect_btn").click(e=>{
-          e.preventDefault();
-          $("#connect_loader").show()
-          $("#res").attr('class', '');
-          $.ajax({
-            url: '/connect',
-            method: 'POST',
-            data: '{connect: true}',
-            success: response=>{
-              if(response.error){
-                $("#res").addClass("bg-danger");
-                $("#res").html(response.error)
-              }else if(response.stderr){
-                $("#disconnect_btn").show();
-                $("#res").addClass("bg-warning");
-                $("#res").html(response.stderr)
-                $("#connect_btn").prop('disabled', true);
-              }else{
-                $("#disconnect_btn").show();
-                $("#connect_btn").prop('disabled', true);
-                $("#res").addClass("bg-success");
-                $("#res").html(response.stdout)
-              }
-              
-              $("#connect_loader").hide(100)
-            },
-            error: err=>{
-              $("#connect_btn").prop('disabled', true);
-              $("#connect_loader").hide(100)
-              $("#disconnect_btn").show();
-              $("#res").addClass("bg-success");
-              $("#res").html("Thymio Connected ")
-              console.log(err);
-              socket.emit('dbusConnect', "dbusConnect");
-
-            },
-            timeout: 3000,
-          })
-          $("#disconnect_btn").click(e=>{
-          e.preventDefault();
-          $("#disconnect_loader").show()
-          $("#res").attr('class', '');
-          $.ajax({
-            url: '/disconnect',
-            method: 'POST',
-            data: '{connect: true}',
-            success: response=>{
-              if(response.error){
-                $("#res").addClass("bg-danger");
-                $("#res").html(response.error)
-              }else if(response.stderr){
-                $("#disconnect_btn").show();
-                $("#res").addClass("bg-warning");
-                $("#res").html(response.stderr)
-              }else{
-                $("#disconnect_btn").hide();
-                $("#connect_btn").prop('disabled', false);
-                $("#disconnect_loader").hide()
-                $("#res").addClass("bg-success");
-                $("#res").html(response.stdout)
-              }
-              
-              $("#connect_loader").hide(100)
-            },
-            error: err=>{
-
-              console.log(err)
-            },
-            timeout: 3000
-          });
-        });
-        //   socket.emit('dbusConnect', "dbusConnect");
-        //     return false;
-      })
-       socket.on("conn",data=>{
-          })
-          socket.on("sensors",data=>{
-              if(data)
-              updateSensors(data)
-          })
-  })
-  $(document).ready(()=>{
-    var socket = io();
-    socket.on("sensors",data=>{
-              if(data)
-              updateSensors(data)
-          })
-  })
-
-function updateSensors(data){
-  $("#proxLeft").css("width", `${data.prox.horizontal.left*100/4500}%`).html(data.prox.horizontal.left);
-  $("#proxCenterLeft").css("width", `${data.prox.horizontal.centerLeft*100/4500}%`).html(data.prox.horizontal.centerLeft);
-  $("#proxCenter").css("width", `${data.prox.horizontal.center*100/4500}%`).html(data.prox.horizontal.center);
-  $("#proxCenterRight").css("width", `${data.prox.horizontal.centerRight*100/4500}%`).html(data.prox.horizontal.centerRight);
-  $("#proxRight").css("width", `${data.prox.horizontal.right*100/4500}%`).html(data.prox.horizontal.right);
-  $("#proxBottomLeft").css("width", `${data.prox.horizontal.bottomLeft*100/4500}%`).html(data.prox.horizontal.bottomLeft);
-  $("#proxBottomRight").css("width", `${data.prox.horizontal.bottomRight*100/4500}%`).html(data.prox.horizontal.bottomRight);
-  $("#proxGroundAmbiant0").css("width", `${data.prox.ground.ambiant[0]*100/3600}%`).html(data.prox.ground.ambiant[0]);
-  $("#proxGroundAmbiant1").css("width", `${data.prox.ground.ambiant[1]*100/3600}%`).html(data.prox.ground.ambiant[1]);
-  $("#proxGroundReflect0").css("width", `${data.prox.ground.reflected[0]*100/1000}%`).html(data.prox.ground.reflected[0]);
-  $("#proxGroundReflect1").css("width", `${data.prox.ground.reflected[1]*100/1000}%`).html(data.prox.ground.reflected[1]);
-  $("#proxGroundDelta0").css("width", `${data.prox.ground.delta[0]*100/1000}%`).html(data.prox.ground.delta[0]);
-  $("#proxGroundDelta1").css("width", `${data.prox.ground.delta[1]*100/1000}%`).html(data.prox.ground.delta[1]);
-  $("#accelerometer0").css("width", `${data.acc[0]*100/1000}%`).html(data.acc[0]);
-  $("#accelerometer1").css("width", `${data.acc[1]*100/1000}%`).html(data.acc[1]);
-  $("#accelerometer2").css("width", `${data.acc[2]*100/1000}%`).html(data.acc[2]);
-  $("#temperature").css("width", `${data.temperature*100/1024}%`).html(data.temperature);
-  $("#micIntensity").css("width", `${data.mic.intensity[0]}%`).html(data.mic.intensity[0]);
-  $("#micThreshold").css("width", `${data.mic.threshold[0]}%`).html(data.mic.threshold[0]);
-  $("#motorLeft").css("width", `${data.motor.left[0]*100/250}%`).html(data.motor.left[0]);
-  $("#motorRight").css("width", `${data.motor.right[0]*100/250}%`).html(data.motor.right[0]);
-
-}
-function motor(m){
-  var socket = io();
-  socket.emit("motor", {left:$("#leftMotor").val(), right:$("#rightMotor").val()})
-  console.log({left:$("#leftMotor").val(), right:$("#rightMotor").val()})
-}
-      </script>
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+  
+  <!-- code -->
+  <link rel="stylesheet" href="/editor/lib/codemirror.css">
+  <link rel="stylesheet" href="/editor/theme/darcula.css">
+  <style>
+    .CodeMirror {border: 1px solid black; font-size:13px}
+  </style>
 </head>
 
 <body>
-    <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="#">Thymio</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        
-          <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Thymio</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
+              <!-- <li class="nav-item active">
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
@@ -169,279 +54,340 @@ function motor(m){
               </li>
               <li class="nav-item">
                 <a class="nav-link disabled" href="#">Disabled</a>
-              </li>
+              </li> -->
             </ul>
             <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              <button id="connect_btn" class="btn btn-md btn-success connect_btn">Connect <span id="connect_loader"
+                class="spinner-border spinner-border-sm connect_loader" style="display: none" role="status"
+                aria-hidden="true"></span>
+            </button>
+            <button style="display: none" id="disconnect_btn" class="btn btn-md btn-danger disconnect_btn">Disconnect <span
+              id="disconnect_loader" class="spinner-border spinner-border-sm disconnect_loader" style="display: none" role="status"
+              aria-hidden="true"></span>
+          </button>
             </form> 
-          </div> -->
-        </nav>
-      </div>
+          </div>
+    </nav>
+  </div>
 
-      <div class="content ">
-        <hr>
-        <div class="container">
-          <div class="row  bg-dark">
-            <div class="col-md-12">
-              <h2 >Connect to Thymio</h2>
-              <div class="row">
-                <div class="col-md-6">
-                   <button id="connect_btn" class="btn btn-lg btn-success">Connect <span id="connect_loader" class="spinner-border spinner-border-sm " style="display: none"   role="status" aria-hidden="true"></span>
+  <div class="content ">
+    <hr>
+    <div class="container">
+      <div class="row  bg-dark">
+        <div class="col-md-12">
+          <h2>Connect to Thymio</h2>
+          <div class="row">
+            <div class="col-md-6">
+              <button id="connect_btn" class="btn btn-lg btn-success connect_btn">Connect <span id="connect_loader"
+                  class="spinner-border spinner-border-sm connect_loader" style="display: none" role="status"
+                  aria-hidden="true"></span>
               </button><br>
-                </div>
-                <div class="col-md-6">
-                  <button style="display: none" id="disconnect_btn" class="btn btn-lg btn-danger">Disconnect <span id="disconnect_loader" class="spinner-border spinner-border-sm " style="display: none"   role="status" aria-hidden="true"></span>
-                  </button>
-                </div>
-              </div>
-              <p id="res" ></p>
+            </div>
+            <div class="col-md-6">
+              <button style="display: none" id="disconnect_btn" class="btn btn-lg btn-danger disconnect_btn">Disconnect <span
+                  id="disconnect_loader" class="spinner-border spinner-border-sm disconnect_loader" style="display: none" role="status"
+                  aria-hidden="true"></span>
+              </button>
             </div>
           </div>
-       <br>
-          <div class="row  bg-dark">
-            <div class="col-md-12"><br>
-              <h2 class="text-center">Sensors</h2>
-              <hr>
-              <form>
-                  <div class="row">
-                      <div class="col-md-4">
-                        <div class="form-group row">
-                            <div class="col-sm-12">PROX Left</div>
-                            <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxLeft" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">75</div>
-                                </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                          <div class="col-sm-12">PROX Center Left</div>
-                          <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxCenterLeft" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                </div>
-                          </div>
-                        </div>
-                       <hr>
-                       <div class="form-group row">
-                          <div class="col-sm-12">PROX Center</div>
-                          <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxCenter" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                </div>
-                          </div>
-                        </div>
-                       <hr>
-                       <div class="form-group row">
-                          <div class="col-sm-12">PROX Center Right</div>
-                          <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxCenterRight" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                </div>
-                          </div>
-                        </div>
-                       <hr>
-                       <div class="form-group row">
-                          <div class="col-sm-12">PROX Right</div>
-                          <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxRight" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                </div>
-                          </div>
-                        </div>
-                       <hr>
-                       <div class="form-group row">
-                          <div class="col-sm-12">PROX Bottom Left</div>
-                          <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxBottomLeft" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                </div>
-                          </div>
-                        </div>
-                       <hr>
-                       <div class="form-group row">
-                          <div class="col-sm-12">PROX Bottom Right</div>
-                          <div class="col-md-12">
-                              <div class="progress">
-                                  <div id="proxBottomRight" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                </div>
-                          </div>
-                        </div>
-                       <hr>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group row">
-                            <div class="col-sm-12">PROX Ground Ambiant 0</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="proxGroundAmbiant0" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">PROX Ground Ambiant 1</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="proxGroundAmbiant1" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">PROX Ground Reflected 0</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="proxGroundReflect0" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">PROX Ground Reflected 1</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="proxGroundReflect1" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">PROX Ground Delta 0</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="proxGroundDelta0" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">PROX Ground Delta 1</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="proxGroundDelta1" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group row">
-                            <div class="col-sm-12">Accelerometer 0</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="accelerometer0" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">Accelerometer 1</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="accelerometer1" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">Accelerometer 2</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="accelerometer2" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">Temperature</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="temperature" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">Mic Intensity</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="micIntensity" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
-                         <div class="form-group row">
-                            <div class="col-sm-12">Mic Threshold</div>
-                            <div class="col-md-12">
-                                <div class="progress">
-                                    <div id="micThreshold" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                                  </div>
-                            </div>
-                          </div>
-                         <hr>
+          <p id="res"></p>
+        </div>
+      </div>
+      <br>
+      <div class="row  bg-dark">
+        <div class="col-md-6"><br>
+          <h2 class="text-center">Sensors</h2>
+          <hr>
+          <form>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Left</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxLeft" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                        aria-valuemax="100" style="width: 0%">0</div>
                     </div>
                   </div>
-
-
-
-             <div class="form-group row">
-                <div class="col-sm-12">Motor Left</div>
-                <div class="col-md-12">
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Center Left</div>
+                  <div class="col-md-12">
                     <div class="progress">
-                        <div id="motorLeft" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                      </div>
+                      <div id="proxCenterLeft" class="progress-bar" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Center</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxCenter" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                        aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Center Right</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxCenterRight" class="progress-bar" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Right</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxRight" class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                        aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Bottom Left</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxBottomLeft" class="progress-bar" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Bottom Right</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxBottomRight" class="progress-bar" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Ground Ambiant 0</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxGroundAmbiant0" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Ground Ambiant 1</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxGroundAmbiant1" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Ground Reflected 0</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxGroundReflect0" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Ground Reflected 1</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxGroundReflect1" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Ground Delta 0</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxGroundDelta0" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">PROX Ground Delta 1</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="proxGroundDelta1" class="progress-bar   bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group row">
+                  <div class="col-sm-12">Accelerometer 0</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="accelerometer0" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 50%;animation-direction: reverse;">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">Accelerometer 1</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="accelerometer1" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">Accelerometer 2</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="accelerometer2" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">Temperature</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="temperature" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">Mic Intensity</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="micIntensity" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                  <div class="col-sm-12">Mic Threshold</div>
+                  <div class="col-md-12">
+                    <div class="progress">
+                      <div id="micThreshold" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                        aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+              </div>
+            </div>
+
+
+
+            <div class="form-group row">
+              <div class="col-sm-12">Motor Left</div>
+              <div class="col-md-12">
+                <div class="progress">
+                  <div id="motorLeft" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                    aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
                 </div>
               </div>
-             <hr>
-             <div class="form-group row">
-                <div class="col-sm-12">Motor Right</div>
-                <div class="col-md-12">
-                    <div class="progress">
-                        <div id="motorRight" class="progress-bar bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 35%">35</div>
-                      </div>
+            </div>
+            <hr>
+            <div class="form-group row">
+              <div class="col-sm-12">Motor Right</div>
+              <div class="col-md-12">
+                <div class="progress">
+                  <div id="motorRight" class="progress-bar bg-info" role="progressbar" aria-valuenow="75"
+                    aria-valuemin="0" aria-valuemax="100" style="width: 0%">0</div>
                 </div>
               </div>
-             <hr>
-             <div class="form-group row">
-               <div class="col-sm-12">
+            </div>
+            <hr>
+            <div class="form-group row">
+              <div class="col-sm-12">
                 Left Motor
-               </div>
+              </div>
               <div class="col-md-6">
 
-                <input class="multi-range motorSlider" id="leftMotor" title="left" onchange="motor(this)" type="range" style="width: 100%;" max="250", min="-250" >
+                <input class="multi-range motorSlider" id="leftMotor" title="left" onchange="motor(this)" type="range"
+                  style="width: 100%;" max="250" , min="-250">
               </div>
               <div class="col-sm-12">
                 Right Motor
-               </div>
-              <div class="col-md-6">
-                <input class="multi-range motorSlider" id="rightMotor" title="right" type="range" onchange="motor(this)" style="width: 100%;" max="250", min="-250" >
               </div>
-             
+              <div class="col-md-6">
+                <input class="multi-range motorSlider" id="rightMotor" title="right" type="range" onchange="motor(this)"
+                  style="width: 100%;" max="250" , min="-250">
+              </div>
+
             </div>
-                <div class="form-group row">
-                  <div class="col-sm-10">
-                    <button type="submit" id="run" class="btn btn-primary">RUN</button>
-                    <button type="submit" id="kill" class="btn btn-danger">Kill</button>
-                  </div>
-                </div>
-              </form>
+
+          </form>
+        </div>
+        <div class="col-md-6"><br>
+          <h2 class="text-center">Code</h2>
+          <hr>
+          <form action="">
+            <div class="form-group">
+              <textarea name="code" id="code" ><%= script%></textarea>
             </div>
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <button type="submit" id="save" class="btn btn-success">Save <span
+                  id="save_loader" class="spinner-border spinner-border-sm disconnect_loader" style="display: none" role="status"
+                  aria-hidden="true"></span></button>
+                <button type="submit" id="run" class="btn btn-success">Execute</button>
+                <button type="submit" id="kill" class="btn btn-danger" disabled>Kill</button>
+              </div>
+            </div>
+            
+          </form>
+          <div class="col-md-12">
+            <h2 class="text-center">Log</h2><hr>
+            <form action="">
+              <div class="form-group row">
+                <textarea name="log" id="log" ></textarea>
+              </div>
+              <div class="form-group row">
+                <button type="submit" id="save_log" class="btn btn-success" >Save Log</button>  
+                <button type="submit" id="clear_log" class="btn btn-danger" >Clear Log</button>
+              </div>
+            </form>
           </div>
         </div>
-        <hr>
-      </div>
-       
-        
-        <footer class="container-fluid  text-center">
-          <p>Footer Text</p>
-        </footer>
-        <script src="/bootstrap-4.3.1-dist/js/bootstrap-slider.min.js"></script>
-        <script>
-          $('.motorSlider').slider({ min: -250, max: 250, value: 0,  step:5 })
 
-        </script>
+      </div>
+    </div>
+    <hr>
+  </div>
+
+
+  <footer class="container-fluid  text-center">
+    <p>Footer Text</p>
+  </footer>
+  <script src="/bootstrap-4.3.1-dist/js/bootstrap-slider.min.js"></script>
+  <script src="/editor/lib/codemirror.js"></script>
+  <script src="/editor/mode/python/python.js"></script>
+  <script src="/editor/addone/selection/active-line.js"></script>
+  <script src="/editor/addone/edit/matchbrackets.js"></script>
+  <script src="/javascripts/app.js"></script>
 </body>
 
 </html>
